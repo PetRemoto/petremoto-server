@@ -8,14 +8,11 @@ var userSchema = new mongoose.Schema({
   lastname: {type: String, trim: true, required: true, minlength: 5, maxlength: 40},
   password: { type: String, trim: true, required: true, minlength: 5, maxlength: 40},
   email: { type: String, trim: true, required: true, minlength: 5, maxlength: 40, unique: true},
-  contatos: [ {type: mongoose.Schema.ObjectId, ref: 'Contato'} ],
-  requests: [ {type: mongoose.Schema.ObjectId, ref: 'User'} ],
-  friends: [ {type: mongoose.Schema.ObjectId, ref: 'User'} ]
+  dispensers: [ {type: mongoose.Schema.ObjectId, ref: 'Dispenser'} ]
 });
 
 // Apply the uniqueValidator plugin to userSchema.
 // userSchema.plugin(uniqueValidator);
-
 
 // create the model for users and expose it to our app
 module.exports = mongoose.model('User', userSchema);
