@@ -48,7 +48,7 @@ router.post('/dispenser', function (req, res) {
  - serial
  */
 router.post('/dispenser/check', function (req, res) {
-    var query = {'serial': req.body.serial.toLowerCase() };
+    var query = {'serial': req.body.serial.toUpperCase() };
 
     Dispenser.findOne(query).exec(function (err, dispenser) {
         if (!err) {
@@ -83,7 +83,7 @@ router.post('/dispenser/check', function (req, res) {
  - serial
  */
 router.post('/dispenser/feed', function (req, res) {
-    var query = {'serial': req.body.serial.toLowerCase() };
+    var query = {'serial': req.body.serial.toUpperCase() };
 
     Dispenser.update(query, { $set: { feed: true } }, function (err, dispenser) {
         if (err) {
