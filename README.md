@@ -3,6 +3,6 @@
 ================
 
 
-Todas as informações para desenvolvimento podem ser encontradas no [Wiki](Home).
+Todas as informações para desenvolvimento podem ser encontradas no [Wiki](https://github.com/PetRemoto/petremoto-server/wiki).
 
-Está procurando nossa [API](API)?
+Está procurando nossa [API](https://github.com/PetRemoto/petremoto-server/wiki/API)?
