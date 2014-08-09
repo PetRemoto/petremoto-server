@@ -1,12 +1,17 @@
 var mongoose = require('mongoose');
 var uniqueValidator = require('mongoose-unique-validator');
 
+function validatorEnum(v) {
+  return  (v == 'EMPTY' || v == 'OFFLINE' || v == 'ALMOST_EMPTY' || v == 'NORMAL' || v == 'BLOCKED');
+};
+
 // define the schema for our user model
 var dispenserSchema = new mongoose.Schema({
-    serial: { type: String, trim: true, required: true, lowercase: true, unique: true},
-    status: { type: String, enum: ['EMPTY', 'ALMOST_EMPTY', 'BLOCKED', 'NORMAL', 'OFFLINE', 'UNAVAIABLE'], default: 'OFFLINE' },
+    serial: { type: String, trim: true, required: true, uppercase: true, unique: true},
+    name: { type: String, trim: true, required: true},
+    status: { type: String, default: 'OFFLINE', uppercase: true, validate: [validatorEnum, 'my error type'] },
     feed: { type: Boolean, default: false },
-    last_time_feed: { type: Date, default: Date.now },
+    last_time_fed: { type: Date, default: Date.now },
     last_time_check: { type: Date, default: Date.now }
 });
 
