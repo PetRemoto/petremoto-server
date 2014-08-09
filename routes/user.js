@@ -9,19 +9,21 @@ var dispenserRouter = require('./dispenser');
 
 
 /*
- Contact Routers!
- */
+    Contact Routers!
+*/
 router.use('/', dispenserRouter);
 
 
 /*
- Criar um usuário.
-
- Parâmetros:
- - username
- - password
- - email
- */
+    Criar um usuário.
+    
+    Inputs:
+    - username
+    - password
+    - email
+    - fisrtname
+    - lastname
+*/
 router.post('/', function (req, res) {
     var user = new User();
 
@@ -67,11 +69,11 @@ router.post('/', function (req, res) {
 });
 
 /*
- Recuperar um usuário.
-
- Parâmetros:
- - id
- */
+    Recuperar um usuário.
+    
+    Parâmetros:
+    - id
+*/
 router.get('/', function (req, res) {
 
     User.findById(req.query.id).populate('dispensers').exec(function (err, users) {
@@ -87,15 +89,15 @@ router.get('/', function (req, res) {
 
 
 /*
- Editar um usuário.
-
- Parâmetros:
- - username
- - password
- - email
- - firstname
- - lastname
- */
+    Editar um usuário.
+   
+    Input:
+    - id
+    - password
+    - email
+    - firstname
+    - lastname
+*/
 router.post('/edit', function (req, res) {
     // var query = { 'username': req.body.username.toLowerCase() };
 
@@ -127,12 +129,12 @@ router.post('/edit', function (req, res) {
 });
 
 /*
- Login no sistema.
-
- Parâmetros:
- - username
- - password
- */
+    Login no sistema.
+    
+    Parâmetros:
+    - username
+    - password
+*/
 router.get('/login', function (req, res) {
     var rules = {'username': req.query.username, 'password': req.query.password};
 
@@ -150,8 +152,8 @@ router.get('/login', function (req, res) {
 
 
 /*
- Recuperar todas as informações dos usuários no servidor.
- */
+     Recuperar todas as informações dos usuários no servidor.
+*/
 router.get('/all', function (req, res) {
 
     User.find({}).populate('dispensers').exec(function (err, result) {
