@@ -46,9 +46,10 @@ router.post('/dispenser', function (req, res) {
 
  Parâmetros:
  - serial
+ - refresh (boolean)
  */
-router.post('/dispenser/check', function (req, res) {
-    var query = {'serial': req.body.serial.toUpperCase() };
+router.get('/dispenser/check', function (req, res) {
+    var query = {'serial': req.query.serial.toUpperCase() };
 
     Dispenser.findOne(query).exec(function (err, dispenser) {
         if (!err) {
@@ -57,17 +58,17 @@ router.post('/dispenser/check', function (req, res) {
                 res.end(JSON.stringify({'status': 'failed', 'err': 'dispenser not registered'}));
             } else {
 
-                var feed = dispenser.feed;
+//                var feed = dispenser.feed;
+                if (req.query.refresh)
+                    dispenser.last_time_check = new Date();
 
-                dispenser.last_time_check = new Date();
-
-                dispenser.feed = false;
+//                dispenser.feed = false;
 
                 dispenser.save(function (err) {
                     if (err) {
                         res.end(JSON.stringify({'status': 'failed', 'err': err.stack}));
                     } else {
-                        res.end(JSON.stringify({'status': 'success', 'feed': feed}));
+                        res.end(JSON.stringify({'status': 'success', 'feed': dispenser.feed}));
                     }
                 });
             }
@@ -77,15 +78,16 @@ router.post('/dispenser/check', function (req, res) {
 
 
 /*
- Setar um dispenser para feed.
+ Setar um dispenser para alimentar ou não.
 
  Parâmetros:
  - serial
+ - feed (boolean)
  */
 router.post('/dispenser/feed', function (req, res) {
     var query = {'serial': req.body.serial.toUpperCase() };
 
-    Dispenser.update(query, { $set: { feed: true } }, function (err, dispenser) {
+    Dispenser.update(query, { $set: { feed: req.body.feed } }, function (err, dispenser) {
         if (err) {
             res.end(JSON.stringify({'status': 'failed', 'err': err.stack}));
         } else if (dispenser == 0) {
