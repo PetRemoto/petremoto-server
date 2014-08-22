@@ -24,17 +24,17 @@ router.post('/dispenser', function (req, res) {
     dispenser.save(function (err) {
         if (err) {
             if (err.errors.serial) {
-                res.end(JSON.stringify({'status': 'failed', 'err': 'serial already registered'}));
+                res.json(400, {'status': 'failed', 'err': 'serial already registered'});
             } else {
-                res.end(JSON.stringify({'status': 'failed', 'err': err}));
+                res.json(400, {'status': 'failed', 'err': err});
             }
         } else {
 
             User.findByIdAndUpdate(req.body.id, { $addToSet: { dispensers: dispenser._id }}, function (err, user) {
                 if (err) {
-                    res.end(JSON.stringify({'status': 'failed', 'err': err.stack}));
+                    res.json(400, {'status': 'failed', 'err': err.stack});
                 } else {
-                    res.end(JSON.stringify({'status': 'success', 'user': user}));
+                    res.json(200, {'status': 'success', 'user': user});
                 }
             });
         }
@@ -55,7 +55,7 @@ router.get('/dispenser/check', function (req, res) {
         if (!err) {
 
             if (!dispenser) {
-                res.end(JSON.stringify({'status': 'failed', 'err': 'dispenser not registered'}));
+                res.json(400, {'status': 'failed', 'err': 'dispenser not registered'});
             } else {
 
 //                var feed = dispenser.feed;
@@ -66,9 +66,9 @@ router.get('/dispenser/check', function (req, res) {
 
                 dispenser.save(function (err) {
                     if (err) {
-                        res.end(JSON.stringify({'status': 'failed', 'err': err.stack}));
+                        res.json(400, {'status': 'failed', 'err': err.stack});
                     } else {
-                        res.end(JSON.stringify({'status': 'success', 'feed': dispenser.feed}));
+                        res.json(200, {'status': 'success', 'feed': dispenser.feed});
                     }
                 });
             }
@@ -89,13 +89,13 @@ router.post('/dispenser/feed', function (req, res) {
 
     Dispenser.update(query, { $set: { feed: req.body.feed } }, function (err, dispenser) {
         if (err) {
-            res.end(JSON.stringify({'status': 'failed', 'err': err.stack}));
+            res.json(400, {'status': 'failed', 'err': err.stack});
         } else if (dispenser == 0) {
-            res.end(JSON.stringify({'status': 'failed', 'err': 'any dispenser found'}));
+            res.json(400, {'status': 'failed', 'err': 'any dispenser found'});
         } else if (dispenser > 1) {
-            res.end(JSON.stringify({'status': 'failed', 'err': 'you should modified only 1 dispenser. current: ' + dispenser}));
+            res.json(400, {'status': 'failed', 'err': 'you should modified only 1 dispenser. current: ' + dispenser});
         } else {
-            res.end(JSON.stringify({'status': 'success', 'msg': dispenser + ' dispenser updated'}));
+            res.json(200, {'status': 'success', 'msg': dispenser + ' dispenser updated'});
         }
     });
 });
@@ -111,19 +111,19 @@ router.post('/dispenser/status', function (req, res) {
 
     Dispenser.findOne(query).exec(function (err, dispenser) {
         if (err) {
-            res.end(JSON.stringify({'status': 'failed', 'err': err.stack}));
+            res.json(400, {'status': 'failed', 'err': err.stack});
         } else {
 
             if (!dispenser) {
-                res.end(JSON.stringify({'status': 'failed', 'err': 'dispenser not registered'}));
+                res.json(200, {'status': 'failed', 'err': 'dispenser not registered'});
             } else {
                 dispenser.status = req.body.status.toUpperCase();
 
                 dispenser.save(function (err) {
                     if (err) {
-                        res.end(JSON.stringify({'status': 'failed', 'err': err.stack}));
+                        res.json(400, {'status': 'failed', 'err': err.stack});
                     } else {
-                        res.end(JSON.stringify({'status': 'success', 'msg': 'status setted'}));
+                        res.json(200, {'status': 'success', 'msg': 'status setted'});
                     }
                 });
             }
