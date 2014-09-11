@@ -1,20 +1,24 @@
 {
-  "name": "petremoto",
-  "version": "0.0.1",
-  "private": true,
-  "scripts": {
-    "start": "node app.js"
-  },
-  "dependencies": {
-    "express": "~4.2.0",
-    "static-favicon": "~1.0.0",
-    "morgan": "~1.0.0",
-    "mongoose": "~3.6.0",
-    "cookie-parser": "~1.0.1",
-    "body-parser": "~1.0.0",
-    "debug": "~0.7.4",
-    "jade": "~1.3.0",
-    "lodash": "~2.4.X",
-    "mongoose-unique-validator": "~0.3.0"
-  }
+    "name": "petremoto",
+    "version": "0.0.2",
+    "homepage": "https://petremoto.herokuapp.com",
+    "private": true,
+    "scripts": {
+        "prestart": "npm install",
+        "postinstall": "bower install",
+        "start": "node app.js"
+    },
+    "dependencies": {
+        "body-parser": "~1.6.X",
+        "bower": "~1.3.X",
+        "cookie-parser": "~1.3.X",
+        "debug": "~0.7.X",
+        "express": "~4.8.X",
+        "jade": "~1.6.X",
+        "lodash": "~2.4.X",
+        "mongoose": "~3.8.X",
+        "mongoose-unique-validator": "~0.3.X",
+        "morgan": "~1.2.X",
+        "static-favicon": "~1.0.X"
+    }
 }

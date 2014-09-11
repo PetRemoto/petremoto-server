@@ -1,0 +1,15 @@
+{
+    "name": "justaclassblog",
+    "description": "Just a simple Class Blog.",
+    "version": "0.0.0",
+    "homepage": "https://petremoto.herokuapp.com",
+    "license": "MIT",
+    "private": true,
+    "dependencies": {
+        "angular": "~1.2.23",
+        "angular-mocks": "~1.2.23",
+        "bootstrap": "~3.1.1",
+        "angular-route": "~1.2.23",
+        "angular-resource": "~1.2.23"
+    }
+}

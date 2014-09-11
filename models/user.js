@@ -8,7 +8,9 @@ var userSchema = new mongoose.Schema({
     lastname: {type: String, trim: true, required: true, lowercase: true, minlength: 5, maxlength: 40},
     password: { type: String, trim: true, required: true, minlength: 5, maxlength: 40},
     email: { type: String, trim: true, required: true, lowercase: true, minlength: 5, maxlength: 40, unique: true},
-    dispensers: [ {type: mongoose.Schema.ObjectId, ref: 'Dispenser'} ]
+    dispensers: [
+        {type: mongoose.Schema.ObjectId, ref: 'Dispenser'}
+    ]
 });
 
 // Apply the uniqueValidator plugin to userSchema.

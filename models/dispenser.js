@@ -2,7 +2,7 @@ var mongoose = require('mongoose');
 var uniqueValidator = require('mongoose-unique-validator');
 
 function validatorEnum(v) {
-  return  (v == 'EMPTY' || v == 'OFFLINE' || v == 'ALMOST_EMPTY' || v == 'NORMAL' || v == 'BLOCKED');
+    return  (v == 'EMPTY' || v == 'OFFLINE' || v == 'ALMOST_EMPTY' || v == 'NORMAL' || v == 'BLOCKED');
 };
 
 // define the schema for our user model
