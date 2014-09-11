@@ -14,7 +14,7 @@ var Dispenser = require('../models/dispenser');
  - serial
  - name
  */
-router.post('/dispenser', function (req, res) {
+router.post('/user/:id/dispenser', function (req, res) {
 
     var dispenser = new Dispenser();
 
@@ -24,17 +24,17 @@ router.post('/dispenser', function (req, res) {
     dispenser.save(function (err) {
         if (err) {
             if (err.errors.serial) {
-                res.json(400, {'status': 'failed', 'err': 'serial already registered'});
+                res.status(400).json({'status': 'failed', 'err': 'serial already registered'});
             } else {
-                res.json(400, {'status': 'failed', 'err': err});
+                res.status(400).json({'status': 'failed', 'err': err});
             }
         } else {
 
             User.findByIdAndUpdate(req.param('id'), { $addToSet: { dispensers: dispenser._id }}, function (err, user) {
                 if (err) {
-                    res.json(400, {'status': 'failed', 'err': err.stack});
+                    res.status(400).json({'status': 'failed', 'err': err.stack});
                 } else {
-                    res.json(200, {'status': 'success', 'user': user});
+                    res.status(200).json({'status': 'success', 'user': user});
                 }
             });
         }
@@ -48,27 +48,24 @@ router.post('/dispenser', function (req, res) {
  - serial
  - refresh (boolean)
  */
-router.get('/dispenser/check', function (req, res) {
+router.get('/dispenser/:serial/check/:refresh', function (req, res) {
     var query = {'serial': req.param('serial').toUpperCase() };
 
     Dispenser.findOne(query).exec(function (err, dispenser) {
         if (!err) {
 
             if (!dispenser) {
-                res.json(400, {'status': 'failed', 'err': 'dispenser not registered'});
+                res.status(400).json({'status': 'failed', 'err': 'dispenser not registered'});
             } else {
 
-//                var feed = dispenser.feed;
                 if (req.param('refresh'))
                     dispenser.last_time_check = new Date();
 
-//                dispenser.feed = false;
-
                 dispenser.save(function (err) {
                     if (err) {
-                        res.json(400, {'status': 'failed', 'err': err.stack});
+                        res.status(400).json({'status': 'failed', 'err': err.stack});
                     } else {
-                        res.json(200, {'status': 'success', 'feed': dispenser.feed});
+                        res.status(200).json({'status': 'success', 'feed': dispenser.feed});
                     }
                 });
             }
@@ -84,18 +81,18 @@ router.get('/dispenser/check', function (req, res) {
  - serial
  - feed (boolean)
  */
-router.post('/dispenser/feed', function (req, res) {
+router.put('/dispenser/:serial/feed/:feed', function (req, res) {
     var query = {'serial': req.param('serial').toUpperCase() };
 
     Dispenser.update(query, { $set: { feed: req.param('feed') } }, function (err, dispenser) {
         if (err) {
-            res.json(400, {'status': 'failed', 'err': err.stack});
+            res.status(400).json({'status': 'failed', 'err': err.stack});
         } else if (dispenser == 0) {
-            res.json(400, {'status': 'failed', 'err': 'any dispenser found'});
+            res.status(400).json({'status': 'failed', 'err': 'any dispenser found'});
         } else if (dispenser > 1) {
-            res.json(400, {'status': 'failed', 'err': 'you should modified only 1 dispenser. current: ' + dispenser});
+            res.status(400).json({'status': 'failed', 'err': 'you should modified only 1 dispenser. current: ' + dispenser});
         } else {
-            res.json(200, {'status': 'success', 'msg': dispenser + ' dispenser updated'});
+            res.status(200).json({'status': 'success', 'msg': dispenser + ' dispenser updated'});
         }
     });
 });
@@ -107,24 +104,24 @@ router.post('/dispenser/feed', function (req, res) {
  - serial
  - status Boolean
  */
-router.post('/dispenser/status', function (req, res) {
+router.put('/dispenser/:serial/status/:status', function (req, res) {
     var query = {'serial': req.param('serial').toUpperCase() };
 
     Dispenser.findOne(query).exec(function (err, dispenser) {
         if (err) {
-            res.json(400, {'status': 'failed', 'err': err.stack});
+            res.status(400).json({'status': 'failed', 'err': err.stack});
         } else {
 
             if (!dispenser) {
-                res.json(200, {'status': 'failed', 'err': 'dispenser not registered'});
+                res.status(200).json({'status': 'failed', 'err': 'dispenser not registered'});
             } else {
                 dispenser.status = req.param('status').toUpperCase();
 
                 dispenser.save(function (err) {
                     if (err) {
-                        res.json(400, {'status': 'failed', 'err': err.stack});
+                        res.status(400).json({'status': 'failed', 'err': err.stack});
                     } else {
-                        res.json(200, {'status': 'success', 'msg': 'status setted'});
+                        res.status(200).json({'status': 'success', 'msg': 'status setted'});
                     }
                 });
             }
@@ -139,7 +136,7 @@ router.get('/dispenser/all', function (req, res) {
 
     Dispenser.find({}).exec(function (err, result) {
         if (!err) {
-            res.json(200, { 'dispensers': result });
+            res.status(200).json({ 'dispensers': result });
         }
     });
 
