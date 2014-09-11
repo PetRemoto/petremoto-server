@@ -27,37 +27,31 @@ router.use('/', dispenserRouter);
 router.post('/', function (req, res) {
     var user = new User();
 
-    user.username = req.body.username.toLowerCase();
-    user.password = req.body.password;
-    user.email = req.body.email.toLowerCase();
-    user.firstname = req.body.firstname.toLowerCase();
-    user.lastname = req.body.lastname.toLowerCase();
+    user.username = req.param('username').toLowerCase();
+    user.password = req.param('password');
+    user.email = req.param('email').toLowerCase();
+    user.firstname = req.param('firstname').toLowerCase();
+    user.lastname = req.param('lastname').toLowerCase();
 
-    // var query = {"username": req.body.username.toLowerCase()}
-
-    User.find({"username": req.body.username.toLowerCase()}).exec(function (err, users) {
+    User.find({"username": req.param('username').toLowerCase()}).exec(function (err, users) {
         if (!err) {
 
             if (users.length > 0) {
-                var result = {'status': 'failed', 'err': 'username already registered.'};
-                res.end(JSON.stringify(result));
+                res.json(400, {'status': 'failed', 'err': 'username already registered.'});
             } else {
-                User.find({"email": req.body.email.toLowerCase()}).exec(function (err, users) {
+                User.find({"email": req.param('email').toLowerCase()}).exec(function (err, users) {
                     if (!err) {
 
                         if (users.length > 0) {
-                            var result = {'status': 'failed', 'err': 'email already registered.'};
-                            res.end(JSON.stringify(result));
+                            res.json(400, {'status': 'failed', 'err': 'email already registered.'});
                         } else {
                             // Saving it to the database.
                             user.save(function (err) {
                                 if (err) {
-                                    var result = {'status': 'failed', 'err': err.stack};
+                                    res.json(400, {'status': 'failed', 'err': err.stack});
                                 } else {
-                                    var result = {'status': 'success', 'msg': 'user created'};
+                                    res.json(200, {'status': 'success', 'msg': 'user created'});
                                 }
-
-                                res.end(JSON.stringify(result));
                             });
                         }
                     }
@@ -75,14 +69,9 @@ router.post('/', function (req, res) {
     - id
 */
 router.get('/', function (req, res) {
-
-    User.findById(req.query.id).populate('dispensers').exec(function (err, users) {
+    User.findById(req.param('id')).populate('dispensers').exec(function (err, users) {
         if (!err) {
-
-            var result = {};
-            result.users = users;
-
-            res.send(result);
+            res.send(200, { 'users' : users });
         }
     });
 });
@@ -99,30 +88,28 @@ router.get('/', function (req, res) {
     - lastname
 */
 router.post('/edit', function (req, res) {
-    // var query = { 'username': req.body.username.toLowerCase() };
-
     var update = {};
 
-    if (req.body.password)
-        update['password'] = req.body.password;
+    if (req.param('password'))
+        update['password'] = req.param('password');
 
-    if (req.body.email)
-        update['email'] = req.body.email.toLowerCase();
+    if (req.param('email'))
+        update['email'] = req.param('email').toLowerCase();
 
-    if (req.body.firstname)
-        update['firstname'] = req.body.firstname.toLowerCase();
+    if (req.param('firstname'))
+        update['firstname'] = req.param('firstname').toLowerCase();
 
-    if (req.body.lastname)
-        update['lastname'] = req.body.lastname.toLowerCase();
+    if (req.param('lastname'))
+        update['lastname'] = req.param('lastname').toLowerCase();
 
 
-    User.findByIdAndUpdate(req.body.id, update, function (err, data) {
+    User.findByIdAndUpdate(req.param('id'), update, function (err, data) {
         if (err) {
-            res.end(JSON.stringify({'status': 'failed', 'err': err.stack}));
+            res.json(400, {'status': 'failed', 'err': err.stack});
         } else if (data) {
-            res.end(JSON.stringify({'status': 'success', 'msg': 'user edited'}));
+            res.json(200, {'status': 'success', 'msg': 'user edited'});
         } else {
-            res.end(JSON.stringify({'status': 'failed', 'err': 'user not found'}));
+            res.json(400, {'status': 'failed', 'err': 'user not found'});
         }
     });
 
@@ -136,15 +123,11 @@ router.post('/edit', function (req, res) {
     - password
 */
 router.get('/login', function (req, res) {
-    var rules = {'username': req.query.username, 'password': req.query.password};
+    var rules = {'username': req.param('username'), 'password': req.param('password')};
 
     User.find(rules).exec(function (err, users) {
         if (!err) {
-            var result = {};
-
-            result.users = users;
-
-            res.send(result);
+            res.json(200, { 'users' : users });
         }
     });
 
@@ -158,9 +141,7 @@ router.get('/all', function (req, res) {
 
     User.find({}).populate('dispensers').exec(function (err, result) {
         if (!err) {
-            var users = { 'users': result };
-
-            res.send(users);
+            res.json(200, { 'users': result });
         }
     });
 

@@ -18,8 +18,8 @@ router.post('/dispenser', function (req, res) {
 
     var dispenser = new Dispenser();
 
-    dispenser.serial = req.body.serial;
-    dispenser.name = req.body.name;
+    dispenser.serial = req.param('serial');
+    dispenser.name = req.param('name');
 
     dispenser.save(function (err) {
         if (err) {
@@ -30,7 +30,7 @@ router.post('/dispenser', function (req, res) {
             }
         } else {
 
-            User.findByIdAndUpdate(req.body.id, { $addToSet: { dispensers: dispenser._id }}, function (err, user) {
+            User.findByIdAndUpdate(req.param('id'), { $addToSet: { dispensers: dispenser._id }}, function (err, user) {
                 if (err) {
                     res.json(400, {'status': 'failed', 'err': err.stack});
                 } else {
@@ -49,7 +49,7 @@ router.post('/dispenser', function (req, res) {
  - refresh (boolean)
  */
 router.get('/dispenser/check', function (req, res) {
-    var query = {'serial': req.query.serial.toUpperCase() };
+    var query = {'serial': req.param('serial').toUpperCase() };
 
     Dispenser.findOne(query).exec(function (err, dispenser) {
         if (!err) {
@@ -59,7 +59,7 @@ router.get('/dispenser/check', function (req, res) {
             } else {
 
 //                var feed = dispenser.feed;
-                if (req.query.refresh)
+                if (req.param('refresh'))
                     dispenser.last_time_check = new Date();
 
 //                dispenser.feed = false;
@@ -85,9 +85,9 @@ router.get('/dispenser/check', function (req, res) {
  - feed (boolean)
  */
 router.post('/dispenser/feed', function (req, res) {
-    var query = {'serial': req.body.serial.toUpperCase() };
+    var query = {'serial': req.param('serial').toUpperCase() };
 
-    Dispenser.update(query, { $set: { feed: req.body.feed } }, function (err, dispenser) {
+    Dispenser.update(query, { $set: { feed: req.param('feed') } }, function (err, dispenser) {
         if (err) {
             res.json(400, {'status': 'failed', 'err': err.stack});
         } else if (dispenser == 0) {
@@ -105,9 +105,10 @@ router.post('/dispenser/feed', function (req, res) {
 
  Parâmetros:
  - serial
+ - status Boolean
  */
 router.post('/dispenser/status', function (req, res) {
-    var query = {'serial': req.body.serial.toUpperCase() };
+    var query = {'serial': req.param('serial').toUpperCase() };
 
     Dispenser.findOne(query).exec(function (err, dispenser) {
         if (err) {
@@ -117,7 +118,7 @@ router.post('/dispenser/status', function (req, res) {
             if (!dispenser) {
                 res.json(200, {'status': 'failed', 'err': 'dispenser not registered'});
             } else {
-                dispenser.status = req.body.status.toUpperCase();
+                dispenser.status = req.param('status').toUpperCase();
 
                 dispenser.save(function (err) {
                     if (err) {
@@ -138,9 +139,7 @@ router.get('/dispenser/all', function (req, res) {
 
     Dispenser.find({}).exec(function (err, result) {
         if (!err) {
-            var dispensers = { 'dispensers': result };
-
-            res.send(dispensers);
+            res.json(200, { 'dispensers': result });
         }
     });
 
