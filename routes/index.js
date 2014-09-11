@@ -5,7 +5,7 @@ var router = express.Router();
 router.get('/', function (req, res) {
     // res.render('index', { title: 'Express' });
     // res.redirect('http://thiner-les.github.io/pomt-android-app/');
-    res.send('Hello PetRemoto!');
+    res.render('index');
 
 });
 
